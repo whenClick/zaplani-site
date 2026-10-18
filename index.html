@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ZaPlani — планы голосом</title>
+    <meta
+      name="description"
+      content="Скажите планы голосом: ZaPlani разложит их по датам, поставит в календарь и нарисует понятную диаграмму." />
+    <link rel="icon" href="img/favicon.png" />
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        font-size: 20px;
+      }
+      header img {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+      }
+      header nav {
+        margin-left: auto;
+        display: flex;
+        gap: 16px;
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .hero {
+        display: grid;
+        gap: 32px;
+        align-items: center;
+        padding: 40px 0 24px;
+      }
+      .hero h1 {
+        font-size: clamp(34px, 8vw, 52px);
+        font-weight: 900;
+        letter-spacing: -0.02em;
+      }
+      .hero p {
+        font-size: 19px;
+        margin: 16px 0 24px;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .phone {
+        justify-self: center;
+        width: min(300px, 80vw);
+        border-radius: 36px;
+        border: 8px solid var(--muted-surface);
+        overflow: hidden;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+      }
+      .phone img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      section {
+        margin-top: 56px;
+      }
+      section > h2 {
+        font-size: 28px;
+        font-weight: 900;
+        margin-bottom: 16px;
+      }
+      .grid {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+      .card h3 {
+        font-size: 19px;
+        margin: 8px 0 6px;
+      }
+      .card p {
+        margin: 0;
+      }
+      .step {
+        display: inline-grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: var(--on-accent);
+        font-weight: 800;
+      }
+      .plan .price {
+        font-size: 30px;
+        font-weight: 900;
+        margin: 6px 0 10px;
+      }
+      .plan ul {
+        margin: 0 0 16px;
+        padding-left: 20px;
+      }
+      .plan.soon {
+        border-style: dashed;
+      }
+      footer {
+        margin-top: 64px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        font-size: 15px;
+      }
+      @media (min-width: 760px) {
+        .hero {
+          grid-template-columns: 1.2fr 1fr;
+          padding-top: 64px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <img src="img/icon.png" alt="" />
+        ZaPlani
+        <nav>
+          <a href="#how">Как это работает</a>
+          <a href="#plans">Тарифы</a>
+        </nav>
+      </header>
+
+      <div class="hero">
+        <div>
+          <h1>Скажите планы голосом. ZaPlani разложит их по дням.</h1>
+          <p class="muted">
+            «В пятницу в 19:00 бассейн, на следующей неделе отель в Казани, в октябре сделать
+            доклад» — ИИ разберёт фразу, поставит события в календарь и нарисует понятную диаграмму
+            на три месяца вперёд.
+          </p>
+          <div class="actions">
+            <a class="button" href="https://whenclick.github.io/ZaplaniWeb/">Открыть в браузере</a>
+            <a class="button quiet" href="https://t.me/ZaPlani_pub">Канал в Telegram</a>
+          </div>
+        </div>
+        <div class="phone">
+          <picture>
+            <source srcset="img/plan-dark.png" media="(prefers-color-scheme: dark)" />
+            <img
+              src="img/plan-light.png"
+              width="585"
+              height="996"
+              alt="План в ZaPlani: дела и события на диаграмме за три месяца" />
+          </picture>
+        </div>
+      </div>
+
+      <section id="how">
+        <h2>Как это работает</h2>
+        <div class="grid">
+          <div class="card">
+            <span class="step">1</span>
+            <h3>Говорите как есть</h3>
+            <p class="muted">Одной фразой, без формы и полей. Можно и текстом.</p>
+          </div>
+          <div class="card">
+            <span class="step">2</span>
+            <h3>ИИ раскладывает</h3>
+            <p class="muted">
+              Даты, время, повторы, места. Если что-то неясно, спросит, а изменения покажет до того,
+              как применить.
+            </p>
+          </div>
+          <div class="card">
+            <span class="step">3</span>
+            <h3>План перед глазами</h3>
+            <p class="muted">
+              Календарь, список дел и диаграмма, где полосу можно сдвинуть пальцем.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Что ещё умеет</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>Пространства</h3>
+            <p class="muted">Работа, дом, поездка: у каждого свой план и своя короткая анкета.</p>
+          </div>
+          <div class="card">
+            <h3>Подсказки к событиям</h3>
+            <p class="muted">Перед поездкой или переездом ИИ подскажет, что подготовить заранее.</p>
+          </div>
+          <div class="card">
+            <h3>Повторы и напоминания</h3>
+            <p class="muted">«По будням в 8», «каждый месяц 20–23-го», напоминание заранее.</p>
+          </div>
+          <div class="card">
+            <h3>Взгляд на неделю</h3>
+            <p class="muted">Что сделано, что просрочено и куда смотреть дальше.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="plans">
+        <h2>Тарифы</h2>
+        <div class="grid">
+          <div class="card plan">
+            <span class="badge">Сейчас</span>
+            <h3>Бесплатно</h3>
+            <div class="price">0 ₽</div>
+            <ul>
+              <li>
+                <span id="day-limit">10</span> фраз в день и <span id="month-limit">60</span> в
+                месяц на нашем сервере
+              </li>
+              <li><span id="hints-limit">3</span> подсказки к событиям в день</li>
+              <li>Со своим ключом ИИ без ограничений</li>
+            </ul>
+            <a class="button quiet" href="https://whenclick.github.io/ZaplaniWeb/">Начать</a>
+          </div>
+          <div class="card plan soon">
+            <span class="badge">Скоро</span>
+            <h3>Коды доступа и Pro</h3>
+            <div class="price">Скоро</div>
+            <ul>
+              <li>Больше фраз и подсказок каждый день</li>
+              <li>Покупка кода прямо на этом сайте</li>
+              <li>Код вводится в приложении, без регистрации</li>
+            </ul>
+            <a class="button quiet" href="https://t.me/ZaPlani_pub">Узнать первым</a>
+          </div>
+        </div>
+      </section>
+
+      <footer class="muted">
+        <span>© 2026 ZaPlani</span>
+        <a href="https://whenclick.github.io/zaplani-privacy/">Политика конфиденциальности</a>
+        <a href="mailto:dvdtech@bk.ru">dvdtech@bk.ru</a>
+        <a href="https://t.me/ZaPlani_pub">Telegram</a>
+      </footer>
+    </main>
+    <script>
+      // The free limits as the server has them now; the numbers above stay if it does not answer.
+      fetch('https://container-app-zaplani.containerapps.ru/')
+        .then((res) => res.json())
+        .then((limits) => {
+          for (const [id, key] of [
+            ['day-limit', 'dailyLimit'],
+            ['month-limit', 'monthlyLimit'],
+            ['hints-limit', 'hintsDailyLimit'],
+          ]) {
+            if (Number.isFinite(limits[key])) document.getElementById(id).textContent = limits[key];
+          }
+        })
+        .catch(() => {});
+    </script>
+  </body>
+</html>

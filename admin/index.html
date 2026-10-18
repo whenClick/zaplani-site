@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>ZaPlani · админка</title>
+    <link rel="icon" href="../img/favicon.png" />
+    <link rel="apple-touch-icon" href="../img/apple-touch-icon.png" />
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      main {
+        max-width: 760px;
+      }
+      h1 {
+        font-size: 28px;
+        font-weight: 900;
+      }
+      h2 {
+        font-size: 20px;
+        font-weight: 800;
+        margin: 32px 0 12px;
+      }
+      form {
+        display: grid;
+        gap: 12px;
+        margin-top: 20px;
+      }
+      input[type='password'],
+      input[type='url'] {
+        width: 100%;
+        font: inherit;
+        padding: 12px 14px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: var(--bg);
+        color: var(--fg);
+      }
+      label {
+        font-size: 15px;
+      }
+      details {
+        font-size: 15px;
+      }
+      .top {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .top h1 {
+        margin-right: auto;
+      }
+      .top .button {
+        padding: 8px 16px;
+        font-size: 15px;
+      }
+      .tiles {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      }
+      .tile {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 14px;
+      }
+      .tile .label {
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .tile .value {
+        font-size: 28px;
+        font-weight: 900;
+        font-variant-numeric: tabular-nums;
+      }
+      .tile .note {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .meter {
+        height: 6px;
+        border-radius: 3px;
+        background: var(--muted-surface);
+        margin-top: 8px;
+        overflow: hidden;
+      }
+      .meter > div {
+        height: 100%;
+        background: var(--ok);
+      }
+      .meter.warn > div {
+        background: var(--warn);
+      }
+      .meter.bad > div {
+        background: var(--bad);
+      }
+      .chart {
+        display: flex;
+        align-items: flex-end;
+        gap: 3px;
+        height: 120px;
+        padding: 12px;
+      }
+      .chart > div {
+        flex: 1;
+        min-width: 4px;
+        background: var(--accent);
+        border-radius: 3px 3px 0 0;
+      }
+      .chart-axis {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        padding: 0 12px 10px;
+      }
+      .scroll {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15px;
+        font-variant-numeric: tabular-nums;
+      }
+      th,
+      td {
+        padding: 8px 10px;
+        text-align: right;
+        border-bottom: 1px solid var(--line);
+        white-space: nowrap;
+      }
+      th:first-child,
+      td:first-child {
+        text-align: left;
+      }
+      th {
+        font-weight: 700;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      dl {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 6px 16px;
+        margin: 0;
+        font-size: 15px;
+      }
+      dt {
+        color: var(--muted);
+      }
+      dd {
+        margin: 0;
+        text-align: right;
+        overflow-wrap: anywhere;
+      }
+      .error {
+        color: var(--bad);
+      }
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section id="login" hidden>
+        <h1>Админка ZaPlani</h1>
+        <p class="muted">
+          Введите свой код доступа из UNLIMITED_CODES: тот же, что в приложении в поле «Код
+          доступа».
+        </p>
+        <form id="login-form" class="card">
+          <input
+            id="code"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Код доступа"
+            required />
+          <label
+            ><input id="remember" type="checkbox" checked /> Запомнить на этом устройстве</label
+          >
+          <details>
+            <summary class="muted">Адрес сервера</summary>
+            <input id="server" type="url" />
+          </details>
+          <button class="button" type="submit">Войти</button>
+          <p id="login-error" class="error" hidden></p>
+        </form>
+      </section>
+
+      <section id="dash" hidden>
+        <div class="top">
+          <h1>Сервер</h1>
+          <button id="refresh" class="button quiet" type="button">Обновить</button>
+          <button id="logout" class="button quiet" type="button">Выйти</button>
+        </div>
+        <p id="status" class="muted"></p>
+
+        <h2 id="today-title">Сегодня</h2>
+        <div id="today" class="tiles"></div>
+
+        <h2 id="month-title">Этот месяц</h2>
+        <div id="month" class="tiles"></div>
+
+        <h2>Фразы по дням</h2>
+        <div class="card" style="padding: 0">
+          <div id="chart" class="chart"></div>
+          <div id="chart-axis" class="chart-axis muted"></div>
+          <div class="scroll"><table id="days"></table></div>
+        </div>
+
+        <h2>По месяцам</h2>
+        <div class="card scroll" style="padding: 0"><table id="months"></table></div>
+
+        <h2>Настройки сервера</h2>
+        <div class="card"><dl id="settings"></dl></div>
+      </section>
+    </main>
+
+    <script>
+      // The page reads GET /stats from the free-mode server with the owner's access code. The
+      // code stays in this browser only, and only when «Запомнить» is on.
+      const DEFAULT_SERVER = 'https://container-app-zaplani.containerapps.ru';
+      const $ = (id) => document.getElementById(id);
+      const store = {
+        get: (key) => {
+          try {
+            return localStorage.getItem(key);
+          } catch {
+            return null;
+          }
+        },
+        set: (key, value) => {
+          try {
+            if (value === null) localStorage.removeItem(key);
+            else localStorage.setItem(key, value);
+          } catch {
+            // Private mode: the code is kept for this visit only.
+          }
+        },
+      };
+
+      let code = store.get('zaplani-admin-code');
+      let server = store.get('zaplani-admin-server') || DEFAULT_SERVER;
+      let timer = null;
+
+      const reasons = {
+        zaplani_day: 'Дневной лимит устройства',
+        zaplani_month: 'Месячный лимит устройства',
+        zaplani_ip: 'Лимит адреса',
+        zaplani_hints: 'Лимит подсказок',
+        zaplani_budget: 'Бюджет дня исчерпан',
+      };
+      const months =
+        'январь февраль март апрель май июнь июль август сентябрь октябрь ноябрь декабрь'.split(
+          ' ',
+        );
+      const rub = (n) =>
+        `${(n ?? 0).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽`;
+      const int = (n) => (n ?? 0).toLocaleString('ru-RU');
+      const dayLabel = (date) => {
+        const [, m, d] = date.split('-').map(Number);
+        return `${d} ${months[m - 1].slice(0, 3)}`;
+      };
+      const monthLabel = (month) => {
+        const [y, m] = month.split('-').map(Number);
+        return `${months[m - 1]} ${y}`;
+      };
+
+      function el(tag, props = {}, children = []) {
+        const node = document.createElement(tag);
+        Object.assign(node, props);
+        for (const child of [].concat(children)) {
+          if (child != null) node.append(child);
+        }
+        return node;
+      }
+
+      function tile(label, value, note, share) {
+        const children = [
+          el('div', { className: 'label', textContent: label }),
+          el('div', { className: 'value', textContent: value }),
+        ];
+        if (note) children.push(el('div', { className: 'note', textContent: note }));
+        if (share != null) {
+          const level = share >= 0.9 ? ' bad' : share >= 0.6 ? ' warn' : '';
+          const bar = el('div');
+          bar.style.width = `${Math.min(100, Math.round(share * 100))}%`;
+          children.push(el('div', { className: `meter${level}` }, bar));
+        }
+        return el('div', { className: 'tile' }, children);
+      }
+
+      function table(node, head, rows) {
+        node.replaceChildren(
+          el(
+            'thead',
+            {},
+            el(
+              'tr',
+              {},
+              head.map((text) => el('th', { textContent: text })),
+            ),
+          ),
+          el(
+            'tbody',
+            {},
+            rows.map((row) =>
+              el(
+                'tr',
+                {},
+                row.map((text) => el('td', { textContent: text })),
+              ),
+            ),
+          ),
+        );
+      }
+
+      /** The code goes as a bearer token; a server from before that change takes it as ?key=. */
+      async function fetchStats() {
+        const base = server.replace(/\/$/, '');
+        const options = { cache: 'no-store' };
+        let res = await fetch(`${base}/stats`, {
+          ...options,
+          headers: { Authorization: `Bearer ${code}` },
+        });
+        if (res.status === 404) {
+          res = await fetch(`${base}/stats?key=${encodeURIComponent(code)}`, options);
+        }
+        if (res.status === 404) throw new Error('code');
+        if (!res.ok) throw new Error(`Сервер ответил ${res.status}`);
+        return res.json();
+      }
+
+      function render(report) {
+        const { today, settings, server: info } = report;
+        const month = report.months[0] ?? { days: [] };
+        const limits = settings ?? {};
+
+        const started = info?.startedAt ? new Date(info.startedAt).toLocaleString('ru-RU') : null;
+        $('status').textContent = [
+          info ? `Версия ${info.version}` : 'Старая версия сервера: часть цифр не видна',
+          started && `запущен ${started}`,
+          info && !info.keySet && 'КЛЮЧ FM_API_KEY НЕ ЗАДАН',
+          `обновлено ${new Date().toLocaleTimeString('ru-RU')}`,
+        ]
+          .filter(Boolean)
+          .join(' · ');
+
+        $('today-title').textContent = `Сегодня, ${dayLabel(today.date)} (МСК)`;
+        const budget = limits.dailyBudgetRub;
+        const refused = Object.values(today.refused ?? {}).reduce((a, b) => a + b, 0);
+        const refusedNote = Object.entries(today.refused ?? {})
+          .map(([code, n]) => `${reasons[code] ?? code}: ${n}`)
+          .join(', ');
+        $('today').replaceChildren(
+          tile('Фразы', int(today.phrases)),
+          tile('Подсказки', int(today.hints)),
+          tile('Устройства', int(today.devices)),
+          tile(
+            'Расход',
+            rub(today.rub),
+            budget ? `из ${rub(budget)} · осталось ${rub(today.budgetLeftRub)}` : null,
+            budget ? today.rub / budget : null,
+          ),
+          tile('Ошибки модели', int(today.errors), 'фраза возвращена'),
+          tile('Отказы по лимитам', int(refused), refusedNote || null),
+        );
+
+        // The month so far, and where it is heading at this pace.
+        const [y, m] = (month.month ?? today.date).split('-').map(Number);
+        const daysInMonth = new Date(y, m, 0).getDate();
+        const daysSoFar = Number(today.date.slice(8, 10));
+        const requests = (month.phrases ?? 0) + (month.hints ?? 0);
+        const monthRub = month.rub ?? month.days.reduce((a, day) => a + day.rub, 0);
+        $('month-title').textContent =
+          `Месяц: ${monthLabel(month.month ?? today.date.slice(0, 7))}`;
+        $('month').replaceChildren(
+          tile('Фразы', int(month.phrases)),
+          tile('Подсказки', int(month.hints ?? month.days.reduce((a, day) => a + day.hints, 0))),
+          tile('Устройства', int(month.devices), 'хотя бы одна фраза'),
+          tile('Расход', rub(monthRub), `прогноз ${rub((monthRub / daysSoFar) * daysInMonth)}`),
+          tile('Цена запроса', requests ? rub(monthRub / requests) : '—', 'фраза или подсказка'),
+          tile('Ошибки модели', int(month.errors ?? 0)),
+        );
+
+        // Oldest day on the left, as a calendar reads.
+        const days = [...month.days].reverse();
+        const most = Math.max(1, ...days.map((day) => day.phrases + day.hints));
+        $('chart').replaceChildren(
+          ...days.map((day) => {
+            const bar = el('div', {
+              title: `${dayLabel(day.date)}: ${day.phrases} фраз, ${day.hints} подсказок, ${rub(day.rub)}`,
+            });
+            bar.style.height = `${Math.max(2, ((day.phrases + day.hints) / most) * 100)}%`;
+            return bar;
+          }),
+        );
+        $('chart-axis').replaceChildren(
+          el('span', { textContent: days[0] ? dayLabel(days[0].date) : '' }),
+          el('span', { textContent: `макс. ${most} в день` }),
+        );
+        table(
+          $('days'),
+          ['День', 'Устр.', 'Фразы', 'Подск.', 'Расход', 'Ошибки', 'Отказы'],
+          month.days.map((day) => [
+            dayLabel(day.date),
+            int(day.devices),
+            int(day.phrases),
+            int(day.hints),
+            rub(day.rub),
+            int(day.errors ?? 0),
+            int(Object.values(day.refused ?? {}).reduce((a, b) => a + b, 0)),
+          ]),
+        );
+
+        table(
+          $('months'),
+          ['Месяц', 'Устройства', 'Фразы', 'Подсказки', 'Расход'],
+          report.months.map((item) => [
+            monthLabel(item.month),
+            int(item.devices),
+            int(item.phrases),
+            int(item.hints ?? item.days.reduce((a, day) => a + day.hints, 0)),
+            rub(item.rub ?? item.days.reduce((a, day) => a + day.rub, 0)),
+          ]),
+        );
+
+        const rows = settings
+          ? [
+              ['Модель', limits.model],
+              ['Фраз в день на устройство', limits.dailyLimit],
+              ['Фраз в месяц на устройство', limits.monthlyLimit],
+              ['Фраз в день с адреса', limits.ipDailyLimit],
+              ['Подсказок в день', limits.hintsDailyLimit],
+              ['Бюджет в день', rub(limits.dailyBudgetRub)],
+              ['Кодов доступа', limits.accessCodes],
+              ['Адрес', server],
+            ]
+          : [
+              ['Адрес', server],
+              ['', 'Новая ревизия покажет лимиты'],
+            ];
+        $('settings').replaceChildren(
+          ...rows.flatMap(([name, value]) => [
+            el('dt', { textContent: name }),
+            el('dd', { textContent: String(value) }),
+          ]),
+        );
+      }
+
+      function showLogin(message) {
+        clearInterval(timer);
+        $('dash').hidden = true;
+        $('login').hidden = false;
+        $('server').value = server;
+        $('login-error').hidden = !message;
+        $('login-error').textContent = message ?? '';
+      }
+
+      async function load() {
+        $('refresh').disabled = true;
+        try {
+          render(await fetchStats());
+          $('login').hidden = true;
+          $('dash').hidden = false;
+          return true;
+        } catch (error) {
+          if (error.message === 'code') {
+            code = null;
+            store.set('zaplani-admin-code', null);
+            showLogin('Код не подошёл. Нужен код из UNLIMITED_CODES на сервере.');
+          } else if ($('dash').hidden) {
+            showLogin(`Сервер не отвечает: ${error.message}`);
+          } else {
+            $('status').textContent = `Не удалось обновить: ${error.message}`;
+          }
+          return false;
+        } finally {
+          $('refresh').disabled = false;
+        }
+      }
+
+      async function start() {
+        if (!(await load())) return;
+        clearInterval(timer);
+        // Once a minute while the page is in front.
+        timer = setInterval(() => document.visibilityState === 'visible' && load(), 60_000);
+      }
+
+      $('login-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        code = $('code').value.trim();
+        server = $('server').value.trim() || DEFAULT_SERVER;
+        store.set('zaplani-admin-server', server === DEFAULT_SERVER ? null : server);
+        if ($('remember').checked) store.set('zaplani-admin-code', code);
+        start();
+      });
+      $('refresh').addEventListener('click', load);
+      $('logout').addEventListener('click', () => {
+        code = null;
+        store.set('zaplani-admin-code', null);
+        $('code').value = '';
+        showLogin();
+      });
+
+      if (code) start();
+      else showLogin();
+    </script>
+  </body>
+</html>
