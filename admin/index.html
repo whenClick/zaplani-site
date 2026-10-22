@@ -293,6 +293,22 @@
         return el('div', { className: 'tile' }, children);
       }
 
+      /** How the model's answers went: request size, cut-offs, broken answers, second tries. */
+      const perAnswer = (tokens, totals) =>
+        totals.answers ? int(Math.round(tokens / totals.answers)) : '—';
+      const answerTiles = (totals) => [
+        tile(
+          'Токенов в запросе',
+          perAnswer(totals.tokensIn, totals),
+          totals.answers
+            ? `в среднем · ответ ${perAnswer(totals.tokensOut, totals)} · запросов ${int(totals.answers)}`
+            : 'пока не считалось',
+        ),
+        tile('Оборваны', int(totals.cut), 'упёрлись в предел длины ответа'),
+        tile('Не JSON', int(totals.notJson), 'ответ не по шаблону'),
+        tile('Повторы', int(totals.retries), 'вторая попытка после плохого ответа'),
+      ];
+
       function table(node, head, rows) {
         node.replaceChildren(
           el(
@@ -367,6 +383,7 @@
           ),
           tile('Ошибки модели', int(today.errors), 'фраза возвращена'),
           tile('Отказы по лимитам', int(refused), refusedNote || null),
+          ...answerTiles(today),
         );
 
         // The month so far, and where it is heading at this pace.
@@ -384,6 +401,7 @@
           tile('Расход', rub(monthRub), `прогноз ${rub((monthRub / daysSoFar) * daysInMonth)}`),
           tile('Цена запроса', requests ? rub(monthRub / requests) : '—', 'фраза или подсказка'),
           tile('Ошибки модели', int(month.errors ?? 0)),
+          ...answerTiles(month),
         );
 
         // Oldest day on the left, as a calendar reads.
@@ -404,7 +422,19 @@
         );
         table(
           $('days'),
-          ['День', 'Устр.', 'Фразы', 'Подск.', 'Расход', 'Ошибки', 'Отказы'],
+          [
+            'День',
+            'Устр.',
+            'Фразы',
+            'Подск.',
+            'Расход',
+            'Ошибки',
+            'Отказы',
+            'Токенов',
+            'Оборв.',
+            'Не JSON',
+            'Повт.',
+          ],
           month.days.map((day) => [
             dayLabel(day.date),
             int(day.devices),
@@ -413,6 +443,10 @@
             rub(day.rub),
             int(day.errors ?? 0),
             int(Object.values(day.refused ?? {}).reduce((a, b) => a + b, 0)),
+            perAnswer(day.tokensIn, day),
+            int(day.cut),
+            int(day.notJson),
+            int(day.retries),
           ]),
         );
 
