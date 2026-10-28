@@ -139,6 +139,21 @@
         gap: 16px;
         font-size: 15px;
       }
+      /* The button's own display would show it while hidden. */
+      [hidden] {
+        display: none !important;
+      }
+      .apk-notes {
+        margin-top: 12px;
+        font-size: 14px;
+      }
+      .apk-notes p {
+        margin: 0 0 4px;
+      }
+      .apk-notes ul {
+        margin: 0;
+        padding-left: 20px;
+      }
       @media (min-width: 760px) {
         .hero {
           grid-template-columns: 1.2fr 1fr;
@@ -160,15 +175,33 @@
 
       <div class="hero">
         <div>
-          <h1>Скажите планы голосом. ZaPlani разложит их по дням.</h1>
+          <h1>Скажите планы голосом — ZaPlani разложит их по дням</h1>
           <p class="muted">
             «В пятницу в 19:00 бассейн, на следующей неделе отель в Казани, в октябре сделать
             доклад» — ИИ разберёт фразу, поставит события в календарь и нарисует понятную диаграмму
-            на три месяца вперёд.
+            на три месяца вперёд
           </p>
           <div class="actions">
-            <a class="button" href="https://whenclick.github.io/ZaplaniWeb/">Открыть в браузере</a>
+            <a class="button" href="https://app.zaplani.com/">Открыть в браузере</a>
             <a class="button quiet" href="https://t.me/ZaPlani_pub">Канал в Telegram</a>
+            <a
+              class="button quiet"
+              id="apk"
+              href="https://github.com/whenClick/zaplani-site/releases/latest/download/zaplani.apk"
+              hidden
+              >Скачать для Android (APK)</a
+            >
+          </div>
+          <div class="apk-notes muted" id="apk-notes" hidden>
+            <p id="apk-version"></p>
+            <ul>
+              <li>Телефон спросит разрешение ставить приложения из браузера: разрешите</li>
+              <li>
+                Play Защита может предупредить о незнакомом приложении: выберите «Всё равно
+                установить»
+              </li>
+              <li>Новую версию ставьте поверх старой: план сохранится</li>
+            </ul>
           </div>
         </div>
         <div class="phone">
@@ -189,21 +222,21 @@
           <div class="card">
             <span class="step">1</span>
             <h3>Говорите как есть</h3>
-            <p class="muted">Одной фразой, без формы и полей. Можно и текстом.</p>
+            <p class="muted">Одной фразой, без формы и полей. Можно и текстом</p>
           </div>
           <div class="card">
             <span class="step">2</span>
             <h3>ИИ раскладывает</h3>
             <p class="muted">
               Даты, время, повторы, места. Если что-то неясно, спросит, а изменения покажет до того,
-              как применить.
+              как применить
             </p>
           </div>
           <div class="card">
             <span class="step">3</span>
             <h3>План перед глазами</h3>
             <p class="muted">
-              Календарь, список дел и диаграмма, где полосу можно сдвинуть пальцем.
+              Календарь, список дел и диаграмма, где полосу можно сдвинуть пальцем
             </p>
           </div>
         </div>
@@ -214,19 +247,19 @@
         <div class="grid">
           <div class="card">
             <h3>Пространства</h3>
-            <p class="muted">Работа, дом, поездка: у каждого свой план и своя короткая анкета.</p>
+            <p class="muted">Работа, дом, поездка: у каждого свой план и своя короткая анкета</p>
           </div>
           <div class="card">
             <h3>Подсказки к событиям</h3>
-            <p class="muted">Перед поездкой или переездом ИИ подскажет, что подготовить заранее.</p>
+            <p class="muted">Перед поездкой или переездом ИИ подскажет, что подготовить заранее</p>
           </div>
           <div class="card">
             <h3>Повторы и напоминания</h3>
-            <p class="muted">«По будням в 8», «каждый месяц 20–23-го», напоминание заранее.</p>
+            <p class="muted">«По будням в 8», «каждый месяц 20–23-го», напоминание заранее</p>
           </div>
           <div class="card">
             <h3>Взгляд на неделю</h3>
-            <p class="muted">Что сделано, что просрочено и куда смотреть дальше.</p>
+            <p class="muted">Что сделано, что просрочено и куда смотреть дальше</p>
           </div>
         </div>
       </section>
@@ -245,7 +278,7 @@
               <li><span id="hints-limit">3</span> подсказки к событиям в день</li>
               <li>Со своим ключом ИИ без ограничений</li>
             </ul>
-            <a class="button quiet" href="https://whenclick.github.io/ZaplaniWeb/">Начать</a>
+            <a class="button quiet" href="https://app.zaplani.com/">Начать</a>
           </div>
         </div>
       </section>
@@ -286,6 +319,20 @@
           ]) {
             if (Number.isFinite(limits[key])) document.getElementById(id).textContent = limits[key];
           }
+        })
+        .catch(() => {});
+      // The Android download shows once a build is published on this site's releases.
+      fetch('https://api.github.com/repos/whenClick/zaplani-site/releases/latest')
+        .then((res) => (res.ok ? res.json() : null))
+        .then((release) => {
+          if (!release?.assets?.some((asset) => asset.name === 'zaplani.apk')) return;
+          const date = new Date(release.published_at).toLocaleDateString('ru-RU', {
+            day: 'numeric',
+            month: 'long',
+          });
+          document.getElementById('apk-version').textContent = `${release.name}, ${date}`;
+          document.getElementById('apk').hidden = false;
+          document.getElementById('apk-notes').hidden = false;
         })
         .catch(() => {});
     </script>
