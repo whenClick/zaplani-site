@@ -1,4 +1,4 @@
-/* The landing's styles; colors are the app's own (src/theme/tokens.ts). */
+/* Shared by the landing and the admin page; colors are the app's own (src/theme/tokens.ts). */
 @font-face {
   font-family: Nunito;
   font-weight: 200 1000;

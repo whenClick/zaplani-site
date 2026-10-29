@@ -197,6 +197,21 @@
         margin-top: 10px;
         font-size: 15px;
       }
+      /* A phone has room for the logo and the language switch only; the links come back wider. */
+      header {
+        white-space: nowrap;
+      }
+      header nav a {
+        display: none;
+      }
+      .lang {
+        flex-shrink: 0;
+      }
+      @media (min-width: 560px) {
+        header nav a {
+          display: inline;
+        }
+      }
       @media (min-width: 760px) {
         .hero {
           grid-template-columns: 1.2fr 1fr;
