@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ZaPlani · Политика конфиденциальности</title>
+    <link rel="icon" href="../img/favicon.png" />
+    <link rel="apple-touch-icon" href="../img/apple-touch-icon.png" />
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      main { max-width: 720px; }
+      nav { display: flex; gap: 16px; margin-bottom: 24px; font-size: 15px; }
+      h1 { font-size: 28px; font-weight: 900; }
+      h2 { font-size: 20px; font-weight: 800; margin: 28px 0 8px; }
+      p, li { margin: 8px 0; }
+      ul { padding-left: 22px; }
+      hr { border: 0; border-top: 1px solid var(--line); margin: 48px 0; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav>
+        <a href="https://zaplani.com/">zaplani.com</a>
+        <a href="#ru">Русский</a>
+        <a href="#en">English</a>
+        <a href="https://zaplani.com/terms/">Условия использования / Terms</a>
+      </nav>
+      <article id="ru" lang="ru">
+<h1>Политика конфиденциальности ZaPlani</h1>
+<p><em>Обновлено 29 октября 2026 года. English version below.</em></p>
+<p><strong>Коротко</strong></p>
+<ul>
+<li>План, настройки и ключи хранятся на вашем устройстве. Аккаунтов нет.</li>
+<li>Текст фраз уходит в ИИ только после вашего разрешения и только в ту модель, которую вы выбрали.</li>
+<li>Сервер ZaPlani не сохраняет ваши фразы и планы. Он считает число запросов по случайному номеру устройства, из которого нельзя узнать, кто вы.</li>
+<li>Рекламы и аналитики нет, данные не продаются.</li>
+</ul>
+<h2>1. Кто мы</h2>
+<p>Приложения ZaPlani для iPhone и Android, веб-версию app.zaplani.com и сайт zaplani.com делает и выпускает частное лицо, разработчик ZaPlani («мы»). Связаться: dvdtech@bk.ru.</p>
+<p>Мы отвечаем за данные, которые попадают на сервер ZaPlani (раздел 4). То, что лежит только на вашем устройстве, нам недоступно.</p>
+<h2>2. Что хранится на вашем устройстве</h2>
+<p>Эти данные остаются у вас и нам не передаются:</p>
+<ul>
+<li>пункты плана и пространства;</li>
+<li>«факты о вас» (раздел «Что знает ZaPlani»), настройки и место «Где я обычно»;</li>
+<li>ключи API к моделям, если вы их вводили: на iPhone и Android в защищённом хранилище, в веб-версии в хранилище браузера на адресе app.zaplani.com. Ключи не попадают в файл переноса плана;</li>
+<li>журнал разобранных фраз с ответами модели (последние 1000). Файл из него сохраняется только по вашей кнопке, очистить журнал можно в Настройки → Данные и ИИ;</li>
+<li>автоматические копии плана, если вы их включили: они лежат в памяти устройства.</li>
+</ul>
+<p>Если разрешить доступ к календарю, ZaPlani создаёт на телефоне отдельный календарь «ZaPlani» и пишет только в него. Другие ваши календари приложение не читает. Напоминания ставятся на самом телефоне и никуда не отправляются.</p>
+<p>В веб-версии план хранится в браузере на этом адресе. Если очистить данные сайта, план пропадёт, поэтому иногда сохраняйте его в файл.</p>
+<h2>3. Что уходит в сервисы ИИ</h2>
+<p>Когда вы разбираете фразу, спрашиваете чат, просите обзор недели или бриф дня, в выбранную в Настройки → Модель службу уходит:</p>
+<ul>
+<li>ваша фраза или вопрос;</li>
+<li>названия и даты пунктов плана, которые нужны для ответа;</li>
+<li>«факты о вас» и место «Где я обычно», если они заданы;</li>
+<li>запись голоса, если речь распознаёт облачный сервис.</li>
+</ul>
+<p>Перед первой отправкой в каждый сервис ZaPlani спрашивает разрешение. Отозвать его можно в Настройки → Данные и ИИ: после этого приложение снова спросит перед отправкой.</p>
+<p>Сервисы (Groq, GigaChat, Requesty, DeepSeek, OpenRouter, Anthropic, OpenAI или ваш собственный сервер) обрабатывают данные по своим правилам, с которыми вы соглашаетесь, подключая свой ключ. С Ollama на вашем компьютере и в Демо ничего не уходит в интернет.</p>
+<h2>4. Режим «ZaPlani · бесплатно» и наш сервер</h2>
+<p>В этом режиме фразы идут через сервер ZaPlani в облаке Cloud.ru (Россия) в модель Cloud.ru Foundation Models.</p>
+<p><strong>Чего сервер не делает.</strong> Он не записывает в хранилище ваши фразы, ответы модели и план: они проходят сквозь него и забываются. В технический журнал контейнера попадают коды и тексты ошибок, которые вернула модель, но не ваши фразы.</p>
+<p><strong>Что сервер хранит.</strong> Только счётчики, чтобы соблюдать бесплатные лимиты и расход:</p>
+<ul>
+<li>случайный номер устройства (приложение создаёт его само при первом запуске, он ни с чем не связан) и адрес сети в виде необратимого хеша: восстановить по хешу номер или адрес нельзя;</li>
+<li>сколько с этого номера было запросов: фраз, подсказок, сообщений чата, брифов, запросов погоды и курса;</li>
+<li>сколько токенов и рублей потрачено, сколько ответов модели не удалось разобрать и сколько запросов отклонено по лимиту.</li>
+</ul>
+<p>Счётчики лежат в файлах по месяцам в хранилище Cloud.ru. Мы не удаляем их автоматически: цифры нужны, чтобы считать расход и решать, сколько фраз можно давать бесплатно. В них нет ни имён, ни текстов.</p>
+<p>Если вы вводили код доступа, он хранится на вашем устройстве и отправляется на сервер с запросами, чтобы снять лимиты.</p>
+<p>Свою сводку (устройства, фразы, расход, без текстов и без хешей) видит только разработчик по секретному коду.</p>
+<p>Cloud.ru как платформа может вести собственные технические журналы по своим правилам.</p>
+<p><strong>Погода и курс.</strong> Когда чату или брифу нужна погода, название города (без ваших фраз и плана) уходит через сервер ZaPlani в сервис прогнозов Open-Meteo (Швейцария). Сервер помнит прогноз по городу час. Курс валют чат берёт у Центрального банка России через зеркало cbr-xml-daily.ru: туда уходят только коды валют. Число таких запросов с устройства сервер считает за день.</p>
+<h2>5. Микрофон, речь и геолокация</h2>
+<p>Микрофон включается только после нажатия кнопки диктовки. Если речь распознаёт телефон, её обрабатывает сам телефон или браузер по правилам Apple, Google или производителя браузера. Если вы выбрали облачный сервис распознавания, ему уходит запись (см. раздел 3).</p>
+<p>Место для чата («Где я обычно») вы вписываете сами. Кнопка «Определить» рядом с ним просит разрешение на геолокацию и один раз определяет город. Телефон отправляет координаты в свой сервис геокодирования (Apple на iPhone, Google на Android), и тот возвращает название города. ZaPlani координаты не хранит и никуда больше не передаёт. Сохраняется только название города, и оно уходит в модель вместе с вопросом в чате. В фоне приложение местоположение не определяет.</p>
+<h2>6. Сайт zaplani.com и веб-версия</h2>
+<p>Сайт и веб-версия размещены на GitHub Pages (GitHub, США). Как любой хостинг, он видит адрес сети посетителя и может хранить его в своих журналах по своим правилам. Страница сайта обращается к серверу ZaPlani, чтобы показать актуальные бесплатные лимиты, и к GitHub, чтобы показать версию Android-приложения; при этом оба видят адрес сети, как при любом запросе. Шрифты загружаются с самого сайта. Аналитики, рекламы и cookie для слежения нет. Выбранный язык сайт запоминает в вашем браузере.</p>
+<h2>7. Зачем мы обрабатываем данные и на каком основании</h2>
+<ul>
+<li>чтобы работали функции, которые вы запросили: разбор фраз, чат, обзор, бриф, погода, курс;</li>
+<li>чтобы соблюдать бесплатные лимиты, не выйти за бюджет сервера и защитить его от злоупотреблений;</li>
+<li>чтобы понимать, сколько людей пользуются сервисом и сколько он стоит.</li>
+</ul>
+<p>Основание: ваше согласие, которое вы даёте, нажимая «Разрешить» перед первой отправкой, а также исполнение <a href="https://zaplani.com/terms/">Условий использования</a> (счётчики и лимиты нужны, чтобы бесплатный режим вообще работал). Профилирования и автоматических решений о вас нет. Данные не продаются и не используются для рекламы.</p>
+<h2>8. Кому и куда данные могут уходить</h2>
+<ul>
+<li>Cloud.ru (Россия): хостинг сервера и модель в бесплатном режиме;</li>
+<li>сервисы ИИ и распознавания речи, которые выбираете вы (раздел 3), в том числе за пределами России: Groq, Anthropic, OpenAI, OpenRouter и другие;</li>
+<li>Open-Meteo (Швейцария) и Банк России через зеркало cbr-xml-daily.ru: только город или коды валют;</li>
+<li>Apple и Google: распознавание речи и определение города на телефоне, а также сами магазины приложений;</li>
+<li>GitHub (США): хостинг сайта.</li>
+</ul>
+<p>Всё, кроме Cloud.ru и GitHub, срабатывает только когда вы пользуетесь соответствующей функцией и разрешаете её. Передачу за границу делают сервисы, которые вы выбрали сами, и ваши телефон и браузер.</p>
+<h2>9. Сколько данных хранится</h2>
+<ul>
+<li>на устройстве: пока вы не удалите их сами или приложение;</li>
+<li>счётчики на сервере: в месячных файлах без текстов, пока мы их не удалим;</li>
+<li>у выбранных вами сервисов: по их правилам.</li>
+</ul>
+<h2>10. Ваши права и как удалить данные</h2>
+<p>На устройстве вы управляете всем сами:</p>
+<ul>
+<li>убрать пространство или весь план: Настройки → Сброс;</li>
+<li>очистить журнал фраз: Настройки → Данные и ИИ;</li>
+<li>отозвать согласие на отправку в сервис: Настройки → Данные и ИИ;</li>
+<li>удалить всё вместе с ключами: удалить приложение; в браузере очистить данные сайта.</li>
+</ul>
+<p>На сервере нет имён и текстов, а хеши необратимы, поэтому найти «записи конкретного человека» мы не можем. Если не хотите, чтобы вас учитывал даже такой счётчик, не используйте режим «ZaPlani · бесплатно»: выберите другую модель, Ollama или Демо, тогда на наш сервер ничего не уходит.</p>
+<p>По закону вы можете запросить сведения о данных, потребовать исправить или удалить их, отозвать согласие и пожаловаться в Роскомнадзор (rkn.gov.ru) или в надзорный орган вашей страны. Отвечаем на письма в срок, установленный законом.</p>
+<h2>11. Безопасность</h2>
+<p>Запросы к серверу идут по HTTPS. Ключи хранятся в защищённом хранилище устройства, адреса и номера на сервере хешируются, сводка закрыта секретным кодом. Полной защиты не бывает: не вносите в план то, что не стоит доверять никакому приложению (пароли, номера карт).</p>
+<h2>12. Дети</h2>
+<p>ZaPlani не рассчитан на детей младше 14 лет. Если вам меньше 14, пользуйтесь приложением вместе с родителями.</p>
+<h2>13. Изменения</h2>
+<p>Дата вверху страницы — дата последней версии. О существенных изменениях мы скажем в приложении или в Telegram-группе t.me/ZaPlani_pub. Прежние версии можно увидеть в истории репозитория.</p>
+<h2>14. Контакты</h2>
+<p>Вопросы о конфиденциальности: dvdtech@bk.ru</p>
+      </article>
+      <hr />
+      <article id="en" lang="en">
+<h1>ZaPlani Privacy Policy</h1>
+<p><em>Updated October 29, 2026.</em></p>
+<p><strong>In short</strong></p>
+<ul>
+<li>Your plan, settings and keys stay on your device. There are no accounts.</li>
+<li>Your phrases go to an AI model only after you allow it, and only to the model you picked.</li>
+<li>The ZaPlani server does not keep your phrases or plans. It counts requests per random device number that cannot tell who you are.</li>
+<li>No ads, no analytics, no selling of data.</li>
+</ul>
+<h2>1. Who we are</h2>
+<p>The ZaPlani apps for iPhone and Android, the web app at app.zaplani.com and the site zaplani.com are made and released by a private person, the ZaPlani developer («we»). Contact: dvdtech@bk.ru.</p>
+<p>We are responsible for the data that reaches the ZaPlani server (section 4). What stays only on your device is not available to us.</p>
+<h2>2. What stays on your device</h2>
+<p>This data stays with you and is not sent to us:</p>
+<ul>
+<li>plan items and spaces;</li>
+<li>«facts about you» (the «What ZaPlani knows» screen), settings and the place «Where I usually am»;</li>
+<li>API keys for models, if you entered any: in secure storage on iPhone and Android, in the browser's storage at app.zaplani.com on the web. Keys never go into the plan transfer file;</li>
+<li>the log of parsed phrases with the model's answers (the newest 1000). A file is saved from it only when you tap the button, and you can clear the log in Settings → Data and AI;</li>
+<li>automatic backups, if you turned them on: they stay in the device's storage.</li>
+</ul>
+<p>If you allow calendar access, ZaPlani creates a separate «ZaPlani» calendar on the phone and writes only there. The app does not read your other calendars. Reminders are scheduled on the phone itself and are not sent anywhere.</p>
+<p>On the web the plan lives in the browser at that address. If you clear the site's data, the plan is gone, so save it to a file from time to time.</p>
+<h2>3. What goes to AI services</h2>
+<p>When you parse a phrase, ask the chat, or request a weekly review or a daily brief, the service picked in Settings → Model gets:</p>
+<ul>
+<li>your phrase or question;</li>
+<li>the titles and dates of the plan items needed for the answer;</li>
+<li>the «facts about you» and the place «Where I usually am», if set;</li>
+<li>the voice recording, if a cloud service recognizes speech.</li>
+</ul>
+<p>ZaPlani asks before the first request to each service. You can take the permission back in Settings → Data and AI, and the app will ask again before sending.</p>
+<p>The services (Groq, GigaChat, Requesty, DeepSeek, OpenRouter, Anthropic, OpenAI or your own server) handle the data under their own terms, which you accept by connecting your key. With Ollama on your computer and in Demo nothing goes to the internet.</p>
+<h2>4. The «ZaPlani · free» mode and our server</h2>
+<p>In this mode phrases go through the ZaPlani server in the Cloud.ru cloud (Russia) to the Cloud.ru Foundation Models model.</p>
+<p><strong>What the server does not do.</strong> It does not write your phrases, the model's answers or your plan to storage: they pass through and are forgotten. The container's technical log gets error codes and error texts returned by the model, not your phrases.</p>
+<p><strong>What the server keeps.</strong> Only counters, to hold the free limits and the spend:</p>
+<ul>
+<li>a random device number (the app makes it on first launch and it is tied to nothing else) and the network address as an irreversible hash: neither can be recovered from the hash;</li>
+<li>how many requests that number made: phrases, hints, chat messages, briefs, weather and rate look-ups;</li>
+<li>how many tokens and rubles were spent, how many model answers could not be read and how many requests were turned away by a limit.</li>
+</ul>
+<p>The counters sit in files by month in Cloud.ru storage. We do not delete them automatically: the numbers are needed to track the spend and to decide how many free phrases we can afford. They hold no names and no texts.</p>
+<p>If you entered an access code, it is stored on your device and sent to the server with requests to lift the limits.</p>
+<p>Only the developer sees the summary (devices, phrases, spend; no texts, no hashes), behind a secret code.</p>
+<p>Cloud.ru as a platform may keep its own technical logs under its own rules.</p>
+<p><strong>Weather and rates.</strong> When the chat or a brief needs the weather, the city's name (without your phrases or plan) goes through the ZaPlani server to the Open-Meteo forecast service (Switzerland). The server remembers a city's forecast for an hour. Exchange rates come from the Central Bank of Russia through the cbr-xml-daily.ru mirror: only currency codes are sent. The server counts such requests per device for the day.</p>
+<h2>5. Microphone, speech and location</h2>
+<p>The microphone is on only after you tap the dictation button. When the phone recognizes speech, the phone or browser handles it under Apple's, Google's or the browser maker's terms. If you picked a cloud recognition service, it gets the recording (see section 3).</p>
+<p>You type the chat's place («Where I usually am») yourself. The «Detect» button next to it asks for location access and finds the city once. The phone sends the coordinates to its own geocoding service (Apple on iPhone, Google on Android), which returns the city's name. ZaPlani does not keep the coordinates or pass them anywhere else. Only the city's name is kept, and it goes to the model with a chat question. The app never determines your location in the background.</p>
+<h2>6. The site zaplani.com and the web app</h2>
+<p>The site and the web app are hosted on GitHub Pages (GitHub, USA). Like any host, it sees a visitor's network address and may keep it in its logs under its own rules. The site's page asks the ZaPlani server for the current free limits and GitHub for the Android app's version, so both see the network address, as with any request. Fonts load from the site itself. There is no analytics, no ads and no tracking cookies. The site remembers your chosen language in your browser.</p>
+<h2>7. Why we process data, and on what basis</h2>
+<ul>
+<li>to make the features you asked for work: phrase parsing, chat, review, brief, weather, rates;</li>
+<li>to hold the free limits, stay within the server's budget and guard it against abuse;</li>
+<li>to know how many people use the service and what it costs.</li>
+</ul>
+<p>The basis is your consent, which you give by tapping «Allow» before the first request, and carrying out the <a href="https://zaplani.com/terms/">Terms of Use</a> (counters and limits are what makes the free mode possible). There is no profiling and no automated decision about you. Data is not sold and not used for advertising.</p>
+<h2>8. Who may receive data, and where</h2>
+<ul>
+<li>Cloud.ru (Russia): the server's hosting and the model in the free mode;</li>
+<li>the AI and speech services you pick (section 3), including some outside Russia: Groq, Anthropic, OpenAI, OpenRouter and others;</li>
+<li>Open-Meteo (Switzerland) and the Bank of Russia through the cbr-xml-daily.ru mirror: only a city or currency codes;</li>
+<li>Apple and Google: speech recognition and finding the city on the phone, and the app stores themselves;</li>
+<li>GitHub (USA): site hosting.</li>
+</ul>
+<p>Everything except Cloud.ru and GitHub happens only when you use the matching feature and allow it. Transfers abroad are made by the services you chose yourself, and by your phone and browser.</p>
+<h2>9. How long data is kept</h2>
+<ul>
+<li>on the device: until you delete it or the app;</li>
+<li>server counters: in monthly files without texts, until we delete them;</li>
+<li>at the services you chose: under their rules.</li>
+</ul>
+<h2>10. Your rights and how to delete data</h2>
+<p>On the device you control everything yourself:</p>
+<ul>
+<li>remove a space or the whole plan: Settings → Reset;</li>
+<li>clear the phrase log: Settings → Data and AI;</li>
+<li>take back permission to send to a service: Settings → Data and AI;</li>
+<li>delete everything with the keys: delete the app; in the browser clear the site's data.</li>
+</ul>
+<p>The server holds no names and no texts, and hashes cannot be reversed, so we cannot look up «a particular person's records». If you want even such a counter to leave you out, do not use the «ZaPlani · free» mode: pick another model, Ollama or Demo, and nothing goes to our server.</p>
+<p>By law you can ask what data is held, have it corrected or deleted, withdraw consent and complain to Roskomnadzor (rkn.gov.ru) or to the supervisory authority of your country. We answer letters within the time the law sets.</p>
+<h2>11. Security</h2>
+<p>Requests to the server go over HTTPS. Keys are kept in the device's secure storage, addresses and numbers are hashed on the server, and the summary is behind a secret code. Nothing is fully secure: do not put into a plan what you would not trust to any app (passwords, card numbers).</p>
+<h2>12. Children</h2>
+<p>ZaPlani is not meant for children under 14. If you are under 14, use the app together with a parent.</p>
+<h2>13. Changes</h2>
+<p>The date at the top is the date of the latest version. We will announce significant changes in the app or in the Telegram group t.me/ZaPlani_pub. Earlier versions are in the repository history.</p>
+<h2>14. Contact</h2>
+<p>Privacy questions: dvdtech@bk.ru</p>
+      </article>
+    </main>
+  </body>
+</html>

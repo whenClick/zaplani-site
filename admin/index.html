@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex" />
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
     <title>ZaPlani · админка</title>
     <link rel="icon" href="../img/favicon.png" />
     <link rel="apple-touch-icon" href="../img/apple-touch-icon.png" />
@@ -140,6 +140,44 @@
         color: var(--muted);
         font-size: 13px;
       }
+      #tune {
+        margin: 0;
+      }
+      .tune-row {
+        display: grid;
+        grid-template-columns: 1fr 110px;
+        gap: 4px 12px;
+        align-items: center;
+        padding: 8px 0;
+        border-top: 1px solid var(--line);
+      }
+      .tune-row:first-child {
+        border-top: 0;
+      }
+      .tune-row input {
+        width: 100%;
+        font: inherit;
+        padding: 8px 10px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: var(--bg);
+        color: var(--fg);
+      }
+      .tune-row small {
+        grid-column: 1 / -1;
+        color: var(--muted);
+      }
+      .tune-row small button {
+        border: 0;
+        background: none;
+        color: var(--accent);
+        font: inherit;
+        padding: 0 0 0 6px;
+        cursor: pointer;
+      }
+      #tune .button {
+        margin-top: 12px;
+      }
       dl {
         display: grid;
         grid-template-columns: auto 1fr;
@@ -213,6 +251,12 @@
 
         <h2>По месяцам</h2>
         <div class="card scroll" style="padding: 0"><table id="months"></table></div>
+
+        <h2>Лимиты</h2>
+        <div class="card">
+          <form id="tune"></form>
+          <p class="muted" id="tune-note"></p>
+        </div>
 
         <h2>Настройки сервера</h2>
         <div class="card"><dl id="settings"></dl></div>
@@ -350,6 +394,19 @@
         return res.json();
       }
 
+      /** Changes limits on the server; null puts one back to the container's own value. */
+      async function putSettings(changes) {
+        const res = await fetch(`${server.replace(/\/$/, '')}/settings`, {
+          method: 'PUT',
+          headers: { Authorization: `Bearer ${code}` },
+          body: JSON.stringify(changes),
+        });
+        if (res.status === 404) throw new Error(code ? 'old' : 'code');
+        if (res.status === 400) throw new Error((await res.json()).error?.message ?? 'Не принято');
+        if (!res.ok) throw new Error(`Сервер ответил ${res.status}`);
+        return res.json();
+      }
+
       function render(report) {
         const { today, settings, server: info } = report;
         const month = report.months[0] ?? { days: [] };
@@ -465,11 +522,6 @@
         const rows = settings
           ? [
               ['Модель', limits.model],
-              ['Фраз в день на устройство', limits.dailyLimit],
-              ['Фраз в месяц на устройство', limits.monthlyLimit],
-              ['Фраз в день с адреса', limits.ipDailyLimit],
-              ['Подсказок в день', limits.hintsDailyLimit],
-              ['Бюджет в день', rub(limits.dailyBudgetRub)],
               ['Кодов доступа', limits.accessCodes],
               ['Адрес', server],
             ]
@@ -483,6 +535,82 @@
             el('dd', { textContent: String(value) }),
           ]),
         );
+        renderTune(settings);
+      }
+
+      const tunable = [
+        ['dailyLimit', 'Фраз в день на устройство'],
+        ['monthlyLimit', 'Фраз в месяц на устройство'],
+        ['ipDailyLimit', 'Фраз в день с адреса'],
+        ['hintsDailyLimit', 'Подсказок в день'],
+        ['dailyBudgetRub', 'Бюджет в день, ₽'],
+      ];
+
+      /** The limits as inputs: a change holds at once and after a restart, no new revision. */
+      function renderTune(limits) {
+        const form = $('tune');
+        if (!limits?.base) {
+          form.replaceChildren();
+          $('tune-note').textContent = 'Менять лимиты здесь можно после новой ревизии сервера.';
+          return;
+        }
+        $('tune-note').textContent = '';
+        const send = async (changes) => {
+          $('tune-note').textContent = 'Сохраняю…';
+          try {
+            render(await putSettings(changes));
+            $('tune-note').textContent = 'Сохранено, действует сразу.';
+          } catch (error) {
+            $('tune-note').textContent =
+              error.message === 'code'
+                ? 'Код не подошёл.'
+                : error.message === 'old'
+                  ? 'Сервер ещё не знает этой команды: нужна новая ревизия.'
+                  : error.message;
+          }
+        };
+        const rows = tunable.map(([key, label]) => {
+          const input = el('input', {
+            type: 'number',
+            min: '0',
+            step: key === 'dailyBudgetRub' ? '1' : '1',
+            value: String(limits[key]),
+            name: key,
+          });
+          const note = el('small', {
+            textContent: limits.changed?.includes(key)
+              ? `в консоли: ${limits.base[key]} · изменено здесь`
+              : `в консоли: ${limits.base[key]}`,
+          });
+          if (limits.changed?.includes(key)) {
+            note.append(
+              el('button', {
+                type: 'button',
+                textContent: 'Сбросить',
+                onclick: () => send({ [key]: null }),
+              }),
+            );
+          }
+          return el('div', { className: 'tune-row' }, [
+            el('label', { textContent: label }),
+            input,
+            note,
+          ]);
+        });
+        form.replaceChildren(
+          ...rows,
+          el('button', { className: 'button', type: 'submit', textContent: 'Сохранить' }),
+        );
+        form.onsubmit = (event) => {
+          event.preventDefault();
+          const changes = {};
+          for (const [key] of tunable) {
+            const value = Number(form.elements[key].value);
+            if (form.elements[key].value !== '' && value !== limits[key]) changes[key] = value;
+          }
+          if (Object.keys(changes).length) send(changes);
+          else $('tune-note').textContent = 'Ничего не изменилось.';
+        };
       }
 
       function showLogin(message) {
