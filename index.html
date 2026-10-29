@@ -144,25 +144,28 @@
       [hidden] {
         display: none !important;
       }
-      .apk-notes {
-        margin-top: 12px;
-        font-size: 14px;
+      .apk-card h2 {
+        font-size: 22px;
+        font-weight: 900;
       }
-      .apk-notes p {
-        margin: 0 0 4px;
+      .apk-card p {
+        margin: 4px 0 16px;
       }
-      .apk-notes ul {
-        margin: 0;
+      .apk-card ul {
+        margin: 16px 0 0;
         padding-left: 20px;
+        font-size: 14px;
       }
       .lang {
         display: inline-flex;
+        gap: 2px;
+        padding: 2px;
         border: 1px solid var(--line);
         border-radius: 999px;
-        overflow: hidden;
       }
       .lang button {
         border: 0;
+        border-radius: 999px;
         background: transparent;
         color: var(--muted);
         font: inherit;
@@ -254,36 +257,17 @@
             <a class="button quiet" href="https://t.me/ZaPlani_pub" data-en="Telegram channel"
               >Канал в Telegram</a
             >
-            <a
-              class="button quiet"
-              id="apk"
-              href="https://github.com/whenClick/zaplani-site/releases/latest/download/zaplani.apk"
-              data-en="Download for Android (APK)"
-              hidden
-              >Скачать для Android (APK)</a
-            >
-          </div>
-          <div class="apk-notes muted" id="apk-notes" hidden>
-            <p id="apk-version"></p>
-            <ul>
-              <li data-en="The phone will ask to allow installing apps from the browser: allow it">
-                Телефон спросит разрешение ставить приложения из браузера: разрешите
-              </li>
-              <li data-en="Play Protect may warn about an unfamiliar app: choose “Install anyway”">
-                Play Защита может предупредить о незнакомом приложении: выберите «Всё равно
-                установить»
-              </li>
-              <li data-en="Install new versions over the old one: your plan stays">
-                Новую версию ставьте поверх старой: план сохранится
-              </li>
-            </ul>
           </div>
         </div>
         <div class="phone">
           <picture>
-            <source srcset="img/day-dark.png" media="(prefers-color-scheme: dark)" />
+            <source
+              srcset="img/day-dark.png"
+              data-en-srcset="img/en/day-dark.png"
+              media="(prefers-color-scheme: dark)" />
             <img
               src="img/day-light.png"
+              data-en-src="img/en/day-light.png"
               width="585"
               height="1170"
               alt="День в ZaPlani: события по часам и напоминания"
@@ -291,6 +275,32 @@
           </picture>
         </div>
       </div>
+
+      <section id="android" hidden>
+        <div class="card apk-card">
+          <h2 data-en="ZaPlani for Android">ZaPlani для Android</h2>
+          <p class="muted" id="apk-version"></p>
+          <a
+            class="button"
+            id="apk"
+            href="https://github.com/whenClick/zaplani-site/releases/latest/download/zaplani.apk"
+            data-en="Download APK"
+            >Скачать APK</a
+          >
+          <ul class="muted">
+            <li data-en="The phone will ask to allow installing apps from the browser: allow it">
+              Телефон спросит разрешение ставить приложения из браузера: разрешите
+            </li>
+            <li data-en="Play Protect may warn about an unfamiliar app: choose “Install anyway”">
+              Play Защита может предупредить о незнакомом приложении: выберите «Всё равно
+              установить»
+            </li>
+            <li data-en="Install new versions over the old one: your plan stays">
+              Новую версию ставьте поверх старой: план сохранится
+            </li>
+          </ul>
+        </div>
+      </section>
 
       <section id="how">
         <h2 data-en="How it works">Как это работает</h2>
@@ -330,9 +340,13 @@
           <figure class="shot">
             <div class="phone">
               <picture>
-                <source srcset="img/day-dark.png" media="(prefers-color-scheme: dark)" />
+                <source
+                  srcset="img/day-dark.png"
+                  data-en-srcset="img/en/day-dark.png"
+                  media="(prefers-color-scheme: dark)" />
                 <img
                   src="img/day-light.png"
+                  data-en-src="img/en/day-light.png"
                   width="585"
                   height="1170"
                   loading="lazy"
@@ -347,9 +361,13 @@
           <figure class="shot">
             <div class="phone">
               <picture>
-                <source srcset="img/plan-dark.png" media="(prefers-color-scheme: dark)" />
+                <source
+                  srcset="img/plan-dark.png"
+                  data-en-srcset="img/en/plan-dark.png"
+                  media="(prefers-color-scheme: dark)" />
                 <img
                   src="img/plan-light.png"
+                  data-en-src="img/en/plan-light.png"
                   width="585"
                   height="1170"
                   loading="lazy"
@@ -364,9 +382,13 @@
           <figure class="shot">
             <div class="phone">
               <picture>
-                <source srcset="img/calendar-dark.png" media="(prefers-color-scheme: dark)" />
+                <source
+                  srcset="img/calendar-dark.png"
+                  data-en-srcset="img/en/calendar-dark.png"
+                  media="(prefers-color-scheme: dark)" />
                 <img
                   src="img/calendar-light.png"
+                  data-en-src="img/en/calendar-light.png"
                   width="585"
                   height="1170"
                   loading="lazy"
@@ -381,9 +403,13 @@
           <figure class="shot">
             <div class="phone">
               <picture>
-                <source srcset="img/parse-dark.png" media="(prefers-color-scheme: dark)" />
+                <source
+                  srcset="img/parse-dark.png"
+                  data-en-srcset="img/en/parse-dark.png"
+                  media="(prefers-color-scheme: dark)" />
                 <img
                   src="img/parse-light.png"
+                  data-en-src="img/en/parse-light.png"
                   width="585"
                   height="1170"
                   loading="lazy"
@@ -555,6 +581,12 @@
       for (const el of texts) el.dataset.ru = el.innerHTML;
       const images = document.querySelectorAll('[data-alt-en]');
       for (const img of images) img.dataset.altRu = img.alt;
+      // The screenshots follow the language too: English ones sit in img/en/.
+      const shots = document.querySelectorAll('[data-en-src], [data-en-srcset]');
+      for (const el of shots) {
+        if (el.dataset.enSrc) el.dataset.ruSrc = el.getAttribute('src');
+        else el.dataset.ruSrcset = el.getAttribute('srcset');
+      }
 
       function fillLimits() {
         for (const [cls, value] of Object.entries(limits)) {
@@ -575,6 +607,11 @@
       function apply(lang) {
         for (const el of texts) el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.ru;
         for (const img of images) img.alt = lang === 'en' ? img.dataset.altEn : img.dataset.altRu;
+        for (const el of shots) {
+          const en = lang === 'en';
+          if (el.dataset.enSrc) el.src = en ? el.dataset.enSrc : el.dataset.ruSrc;
+          else el.srcset = en ? el.dataset.enSrcset : el.dataset.ruSrcset;
+        }
         for (const button of document.querySelectorAll('[data-lang]')) {
           button.setAttribute('aria-pressed', String(button.dataset.lang === lang));
         }
@@ -621,8 +658,7 @@
           if (!release?.assets?.some((asset) => asset.name === 'zaplani.apk')) return;
           apk = release;
           fillApk(lang);
-          document.getElementById('apk').hidden = false;
-          document.getElementById('apk-notes').hidden = false;
+          document.getElementById('android').hidden = false;
         })
         .catch(() => {});
     </script>
