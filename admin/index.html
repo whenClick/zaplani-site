@@ -543,6 +543,7 @@
         ['dailyLimit', 'Фраз в день на устройство'],
         ['monthlyLimit', 'Фраз в месяц на устройство'],
         ['hintsDailyLimit', 'Подсказок в день'],
+        ['optimizeEnabled', 'ИИ-оптимизация: 1 — вкл, 0 — выкл'],
         ['dailyBudgetRub', 'Бюджет в день, ₽'],
       ];
 
@@ -569,34 +570,37 @@
                   : error.message;
           }
         };
-        const rows = tunable.map(([key, label]) => {
-          const input = el('input', {
-            type: 'number',
-            min: '0',
-            step: key === 'dailyBudgetRub' ? '1' : '1',
-            value: String(limits[key]),
-            name: key,
+        // A server before a setting existed has no value for it: that row is not shown.
+        const rows = tunable
+          .filter(([key]) => limits[key] !== undefined)
+          .map(([key, label]) => {
+            const input = el('input', {
+              type: 'number',
+              min: '0',
+              step: key === 'dailyBudgetRub' ? '1' : '1',
+              value: String(limits[key]),
+              name: key,
+            });
+            const note = el('small', {
+              textContent: limits.changed?.includes(key)
+                ? `в консоли: ${limits.base[key]} · изменено здесь`
+                : `в консоли: ${limits.base[key]}`,
+            });
+            if (limits.changed?.includes(key)) {
+              note.append(
+                el('button', {
+                  type: 'button',
+                  textContent: 'Сбросить',
+                  onclick: () => send({ [key]: null }),
+                }),
+              );
+            }
+            return el('div', { className: 'tune-row' }, [
+              el('label', { textContent: label }),
+              input,
+              note,
+            ]);
           });
-          const note = el('small', {
-            textContent: limits.changed?.includes(key)
-              ? `в консоли: ${limits.base[key]} · изменено здесь`
-              : `в консоли: ${limits.base[key]}`,
-          });
-          if (limits.changed?.includes(key)) {
-            note.append(
-              el('button', {
-                type: 'button',
-                textContent: 'Сбросить',
-                onclick: () => send({ [key]: null }),
-              }),
-            );
-          }
-          return el('div', { className: 'tune-row' }, [
-            el('label', { textContent: label }),
-            input,
-            note,
-          ]);
-        });
         form.replaceChildren(
           ...rows,
           el('button', { className: 'button', type: 'submit', textContent: 'Сохранить' }),

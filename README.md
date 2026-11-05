@@ -5,7 +5,7 @@ They are published as they are to the public repo whenClick/zaplani-site (GitHub
 https://zaplani.com/ and https://zaplani.com/admin/ (`CNAME` names the domain). The web app is
 at https://app.zaplani.com/, from the public repo whenClick/zaplani-app.
 
-The admin page reads `GET /stats` from the free-mode server (`server/index.mjs`) with an access
+The admin page reads `GET /stats` from the free-mode server (`server/routes.mjs`) with an access
 code from `UNLIMITED_CODES`, sent as a bearer token; the code stays in the browser.
 
 The «Скачать для Android» button links to the latest release of zaplani-site
