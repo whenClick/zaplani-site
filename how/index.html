@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Как пользоваться ZaPlani</title>
+    <meta
+      name="description"
+      content="Пять сценариев ZaPlani: поездка одной фразой, дела без сети, «Собрать день», перенос голосом и большая цель по шагам." />
+    <link rel="icon" href="../img/favicon.png" />
+    <link rel="apple-touch-icon" href="../img/apple-touch-icon.png" />
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        font-size: 20px;
+        white-space: nowrap;
+      }
+      header > a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: inherit;
+        text-decoration: none;
+      }
+      header img {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+      }
+      header nav {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 15px;
+        font-weight: 600;
+      }
+      /* A phone has room for the logo and the language switch only; the links come back wider. */
+      header nav a {
+        display: none;
+      }
+      header nav a[aria-current] {
+        color: var(--fg);
+      }
+      @media (min-width: 560px) {
+        header nav a {
+          display: inline;
+        }
+      }
+      .lang {
+        flex-shrink: 0;
+        display: inline-flex;
+        gap: 2px;
+        padding: 2px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+      }
+      .lang button {
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        padding: 4px 12px;
+        cursor: pointer;
+      }
+      .lang button[aria-pressed='true'] {
+        background: var(--accent);
+        color: var(--on-accent);
+      }
+      .intro {
+        padding: 40px 0 8px;
+      }
+      .intro h1 {
+        font-size: clamp(32px, 7vw, 48px);
+        font-weight: 900;
+        letter-spacing: -0.02em;
+      }
+      .intro p {
+        font-size: 19px;
+        margin: 14px 0 0;
+      }
+      .scene {
+        display: grid;
+        gap: 24px;
+        align-items: center;
+        margin-top: 56px;
+      }
+      .scene h2 {
+        font-size: 28px;
+        font-weight: 900;
+        margin: 12px 0 0;
+      }
+      .scene ul {
+        margin: 0;
+        padding-left: 20px;
+        color: var(--muted);
+      }
+      .scene li + li {
+        margin-top: 6px;
+      }
+      .quote {
+        margin: 14px 0 16px;
+        padding: 14px 18px;
+        border-radius: 18px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.35;
+      }
+      .step {
+        display: inline-grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: var(--on-accent);
+        font-weight: 800;
+      }
+      .screen {
+        justify-self: center;
+        width: min(280px, 78vw);
+      }
+      /* The frames of one scenario lie on top of each other and take turns while the card is seen. */
+      .reel {
+        position: relative;
+        aspect-ratio: 1 / 2;
+        border-radius: 34px;
+        border: 8px solid var(--muted-surface);
+        overflow: hidden;
+        background: var(--surface);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+      }
+      .reel picture {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 0.6s ease;
+      }
+      .reel img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      /* The first frame stays under the others: it is what shows without script or motion. */
+      .reel picture:first-child,
+      .reel picture.on {
+        opacity: 1;
+      }
+      .frames {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px;
+        margin: 14px 0 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: frame;
+      }
+      .frames li {
+        counter-increment: frame;
+      }
+      .frames button {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 3px 10px;
+        cursor: pointer;
+      }
+      .frames button::before {
+        content: counter(frame) '. ';
+      }
+      .frames button[aria-pressed='true'] {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--on-accent);
+      }
+      section {
+        margin-top: 72px;
+      }
+      section > h2 {
+        font-size: 28px;
+        font-weight: 900;
+        margin-bottom: 16px;
+      }
+      .grid {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+      .card h3 {
+        font-size: 19px;
+        margin: 0 0 6px;
+      }
+      .card p {
+        margin: 0;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      footer {
+        margin-top: 64px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        font-size: 15px;
+      }
+      @media (min-width: 760px) {
+        .scene {
+          grid-template-columns: 1.15fr 1fr;
+          gap: 40px;
+        }
+        .scene:nth-of-type(even) .story {
+          order: 2;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <a href="../"><img src="../img/icon.png" alt="" />ZaPlani</a>
+        <nav>
+          <a href="../#inside" data-en="Inside">Что внутри</a>
+          <a href="./" aria-current="page" data-en="How to use">Как пользоваться</a>
+          <a href="../#plans" data-en="Pricing">Цена</a>
+          <span class="lang" role="group" aria-label="Language">
+            <button type="button" data-lang="ru" aria-pressed="true">RU</button>
+            <button type="button" data-lang="en" aria-pressed="false">EN</button>
+          </span>
+        </nav>
+      </header>
+
+      <div class="intro">
+        <h1 data-en="How to use ZaPlani">Как пользоваться ZaPlani</h1>
+        <p
+          class="muted"
+          data-en="Five everyday cases: what you say, what ZaPlani does and what you see on the screen. The screenshots are from the app itself">
+          Пять случаев из жизни: что вы говорите, что делает ZaPlani и что видно на экране.
+          Скриншоты из самого приложения
+        </p>
+      </div>
+
+      <article class="scene" id="trip">
+        <div class="story">
+          <span class="step">1</span>
+          <h2 data-en="A whole trip in one phrase">Вся поездка одной фразой</h2>
+          <p
+            class="quote"
+            data-en="“Friday 9:40 flight to Kazan, hotel Friday to Sunday, a tour on Saturday at 11”">
+            «В пятницу в 9:40 вылет в Казань, отель с пятницы по воскресенье, в субботу экскурсия в
+            11»
+          </p>
+          <ul>
+            <li
+              data-en="ZaPlani picks out the flight, the hotel and the tour and shows them before adding anything">
+              ZaPlani разберёт рейс, отель и экскурсию и покажет всё до того, как добавить
+            </li>
+            <li data-en="A hotel not booked yet is marked “to find / buy” so you don’t forget">
+              Отель без брони отметит «найти / купить», чтобы не забыть
+            </li>
+            <li data-en="On the plan the trip sits whole, next to the rest of your week">
+              На плане поездка видна целиком, рядом с остальными делами недели
+            </li>
+          </ul>
+        </div>
+        <div class="screen">
+          <div class="reel" style="--n: 3" data-frames="3">
+            <picture style="--i: 0">
+              <source
+                srcset="../img/how/trip-1-dark.webp"
+                data-en-srcset="../img/how/en/trip-1-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/trip-1-light.webp"
+                data-en-src="../img/how/en/trip-1-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="Фраза"
+                data-alt-en="Phrase" />
+            </picture>
+            <picture style="--i: 1">
+              <source
+                srcset="../img/how/trip-2-dark.webp"
+                data-en-srcset="../img/how/en/trip-2-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/trip-2-light.webp"
+                data-en-src="../img/how/en/trip-2-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="Что добавится"
+                data-alt-en="What gets added" />
+            </picture>
+            <picture style="--i: 2">
+              <source
+                srcset="../img/how/trip-3-dark.webp"
+                data-en-srcset="../img/how/en/trip-3-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/trip-3-light.webp"
+                data-en-src="../img/how/en/trip-3-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="План"
+                data-alt-en="Plan" />
+            </picture>
+          </div>
+          <ol class="frames">
+            <li style="--i: 0">
+              <button type="button" data-frame="0" data-en="Phrase">Фраза</button>
+            </li>
+            <li style="--i: 1">
+              <button type="button" data-frame="1" data-en="What gets added">Что добавится</button>
+            </li>
+            <li style="--i: 2">
+              <button type="button" data-frame="2" data-en="Plan">План</button>
+            </li>
+          </ol>
+        </div>
+      </article>
+      <article class="scene" id="offline">
+        <div class="story">
+          <span class="step">2</span>
+          <h2 data-en="Simple things instantly, even offline">
+            Простое — мгновенно, даже без сети
+          </h2>
+          <p
+            class="quote"
+            data-en="«Сегодня в 12:00 обед с Димой» (“lunch with Dima today at 12:00”)">
+            «Сегодня в 12:00 обед с Димой»
+          </p>
+          <ul>
+            <li data-en="Simple phrases in Russian are read right on the phone: no internet, no AI">
+              Простые фразы читаются прямо на телефоне: без интернета и без ИИ
+            </li>
+            <li data-en="The entry lands in your day at once">Дело сразу встаёт в день</li>
+            <li data-en="English phrases and harder ones, like a trip, go to the AI">
+              Сложное, вроде поездки, разберёт ИИ
+            </li>
+          </ul>
+        </div>
+        <div class="screen">
+          <div class="reel" style="--n: 3" data-frames="3">
+            <picture style="--i: 0">
+              <source
+                srcset="../img/how/offline-1-dark.webp"
+                data-en-srcset="../img/how/en/offline-1-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/offline-1-light.webp"
+                data-en-src="../img/how/en/offline-1-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="Фраза"
+                data-alt-en="Phrase" />
+            </picture>
+            <picture style="--i: 1">
+              <source
+                srcset="../img/how/offline-2-dark.webp"
+                data-en-srcset="../img/how/en/offline-2-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/offline-2-light.webp"
+                data-en-src="../img/how/en/offline-2-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="Разобрано на телефоне"
+                data-alt-en="Read on the phone" />
+            </picture>
+            <picture style="--i: 2">
+              <source
+                srcset="../img/how/offline-3-dark.webp"
+                data-en-srcset="../img/how/en/offline-3-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/offline-3-light.webp"
+                data-en-src="../img/how/en/offline-3-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="День"
+                data-alt-en="Day" />
+            </picture>
+          </div>
+          <ol class="frames">
+            <li style="--i: 0">
+              <button type="button" data-frame="0" data-en="Phrase">Фраза</button>
+            </li>
+            <li style="--i: 1">
+              <button type="button" data-frame="1" data-en="Read on the phone">
+                Разобрано на телефоне
+              </button>
+            </li>
+            <li style="--i: 2"><button type="button" data-frame="2" data-en="Day">День</button></li>
+          </ol>
+        </div>
+      </article>
+      <article class="scene" id="arrange">
+        <div class="story">
+          <span class="step">3</span>
+          <h2 data-en="A messy day becomes a schedule">Хаос дня — в расписание</h2>
+          <p class="quote" data-en="Tap “Plan my day”">Нажмите «Собрать день»</p>
+          <ul>
+            <li
+              data-en="To-dos without a time go into the free gaps between meetings, with 15 minutes to spare">
+              Дела без времени встают в свободные окна между встречами, с запасом 15 минут
+            </li>
+            <li
+              data-en="It is worked out on the phone, without AI. Before saving you see where everything goes">
+              Считается на телефоне, без ИИ. Перед сохранением видно, что куда встанет
+            </li>
+            <li
+              data-en="A courier coming “sometime between 2 and 6” stays out of the way as a heads-up above the day">
+              Курьер «где-то с 14 до 18» не мешает: он висит напоминанием над днём
+            </li>
+          </ul>
+        </div>
+        <div class="screen">
+          <div class="reel" style="--n: 3" data-frames="3">
+            <picture style="--i: 0">
+              <source
+                srcset="../img/how/arrange-1-dark.webp"
+                data-en-srcset="../img/how/en/arrange-1-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/arrange-1-light.webp"
+                data-en-src="../img/how/en/arrange-1-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="День"
+                data-alt-en="Day" />
+            </picture>
+            <picture style="--i: 1">
+              <source
+                srcset="../img/how/arrange-2-dark.webp"
+                data-en-srcset="../img/how/en/arrange-2-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/arrange-2-light.webp"
+                data-en-src="../img/how/en/arrange-2-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="Что изменится"
+                data-alt-en="What changes" />
+            </picture>
+            <picture style="--i: 2">
+              <source
+                srcset="../img/how/arrange-3-dark.webp"
+                data-en-srcset="../img/how/en/arrange-3-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/arrange-3-light.webp"
+                data-en-src="../img/how/en/arrange-3-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="Собрано"
+                data-alt-en="Planned" />
+            </picture>
+          </div>
+          <ol class="frames">
+            <li style="--i: 0"><button type="button" data-frame="0" data-en="Day">День</button></li>
+            <li style="--i: 1">
+              <button type="button" data-frame="1" data-en="What changes">Что изменится</button>
+            </li>
+            <li style="--i: 2">
+              <button type="button" data-frame="2" data-en="Planned">Собрано</button>
+            </li>
+          </ol>
+        </div>
+      </article>
+      <article class="scene" id="move">
+        <div class="story">
+          <span class="step">4</span>
+          <h2 data-en="Plans changed? Just say so">Планы поменялись — просто скажите</h2>
+          <p class="quote" data-en="“Move the pool to Thursday and push the talk back a week”">
+            «Перенеси бассейн на четверг, а доклад сдвинь на неделю»
+          </p>
+          <ul>
+            <li
+              data-en="ZaPlani finds the pool and the talk in your plan and shows where each one moves">
+              ZaPlani найдёт бассейн и доклад в плане и покажет, что куда переедет
+            </li>
+            <li data-en="A dashed line shows where things were before">
+              Пунктиром видно, где было до изменения
+            </li>
+            <li data-en="You can also drag a bar on the chart with a finger">
+              А полосу на диаграмме можно сдвинуть и пальцем
+            </li>
+          </ul>
+        </div>
+        <div class="screen">
+          <div class="reel" style="--n: 3" data-frames="3">
+            <picture style="--i: 0">
+              <source
+                srcset="../img/how/move-1-dark.webp"
+                data-en-srcset="../img/how/en/move-1-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/move-1-light.webp"
+                data-en-src="../img/how/en/move-1-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="Было"
+                data-alt-en="Before" />
+            </picture>
+            <picture style="--i: 1">
+              <source
+                srcset="../img/how/move-2-dark.webp"
+                data-en-srcset="../img/how/en/move-2-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/move-2-light.webp"
+                data-en-src="../img/how/en/move-2-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="Что изменится"
+                data-alt-en="What changes" />
+            </picture>
+            <picture style="--i: 2">
+              <source
+                srcset="../img/how/move-3-dark.webp"
+                data-en-srcset="../img/how/en/move-3-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/move-3-light.webp"
+                data-en-src="../img/how/en/move-3-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="Стало"
+                data-alt-en="After" />
+            </picture>
+          </div>
+          <ol class="frames">
+            <li style="--i: 0">
+              <button type="button" data-frame="0" data-en="Before">Было</button>
+            </li>
+            <li style="--i: 1">
+              <button type="button" data-frame="1" data-en="What changes">Что изменится</button>
+            </li>
+            <li style="--i: 2">
+              <button type="button" data-frame="2" data-en="After">Стало</button>
+            </li>
+          </ol>
+        </div>
+      </article>
+      <article class="scene" id="goal">
+        <div class="story">
+          <span class="step">5</span>
+          <h2 data-en="A big goal, step by step">Большая цель — по шагам</h2>
+          <p class="quote" data-en="“Bathroom renovation by December 1”">
+            «Ремонт в ванной к 1 декабря»
+          </p>
+          <ul>
+            <li
+              data-en="AI optimization suggests splitting a big job into stages and estimates each one">
+              ИИ-оптимизация предложит разбить большое дело на этапы и оценит время каждого
+            </li>
+            <li data-en="The app recounts the plan without AI and shows “before / after”">
+              Приложение пересчитает план без ИИ и покажет «до / после»
+            </li>
+            <li data-en="Only what you pick is applied, and all of it can be undone">
+              Применяется только то, что вы выбрали, и всё можно отменить
+            </li>
+          </ul>
+        </div>
+        <div class="screen">
+          <div class="reel" style="--n: 4" data-frames="4">
+            <picture style="--i: 0">
+              <source
+                srcset="../img/how/goal-1-dark.webp"
+                data-en-srcset="../img/how/en/goal-1-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/goal-1-light.webp"
+                data-en-src="../img/how/en/goal-1-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="Цель"
+                data-alt-en="Goal" />
+            </picture>
+            <picture style="--i: 1">
+              <source
+                srcset="../img/how/goal-2-dark.webp"
+                data-en-srcset="../img/how/en/goal-2-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/goal-2-light.webp"
+                data-en-src="../img/how/en/goal-2-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="Предложение ИИ"
+                data-alt-en="AI suggestion" />
+            </picture>
+            <picture style="--i: 2">
+              <source
+                srcset="../img/how/goal-3-dark.webp"
+                data-en-srcset="../img/how/en/goal-3-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/goal-3-light.webp"
+                data-en-src="../img/how/en/goal-3-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="До и после"
+                data-alt-en="Before and after" />
+            </picture>
+            <picture style="--i: 3">
+              <source
+                srcset="../img/how/goal-4-dark.webp"
+                data-en-srcset="../img/how/en/goal-4-dark.webp"
+                media="(prefers-color-scheme: dark)" />
+              <img
+                src="../img/how/goal-4-light.webp"
+                data-en-src="../img/how/en/goal-4-light.webp"
+                width="585"
+                height="1170"
+                loading="lazy"
+                alt="Этапы"
+                data-alt-en="Stages" />
+            </picture>
+          </div>
+          <ol class="frames">
+            <li style="--i: 0">
+              <button type="button" data-frame="0" data-en="Goal">Цель</button>
+            </li>
+            <li style="--i: 1">
+              <button type="button" data-frame="1" data-en="AI suggestion">Предложение ИИ</button>
+            </li>
+            <li style="--i: 2">
+              <button type="button" data-frame="2" data-en="Before and after">До и после</button>
+            </li>
+            <li style="--i: 3">
+              <button type="button" data-frame="3" data-en="Stages">Этапы</button>
+            </li>
+          </ol>
+        </div>
+      </article>
+
+      <section>
+        <h2 data-en="And a few more">И ещё несколько</h2>
+        <div class="grid">
+          <div class="card">
+            <h3 data-en="Ask ZaPlani">Спросить ZaPlani</h3>
+            <p
+              class="muted"
+              data-en="“What’s on Friday?”, “Where can I fit an hour-long meeting?” The chat answers from your plan">
+              «Что у меня в пятницу?», «Куда вписать встречу на час?» — чат отвечает по вашему плану
+            </p>
+          </div>
+          <div class="card">
+            <h3 data-en="Repeats">Повторы</h3>
+            <p
+              class="muted"
+              data-en="“Mortgage every month on the 20th–23rd”, “Pool on Mondays at 7 pm”. Repeats can skip holidays">
+              «Ипотека каждый месяц 20–23-го», «Бассейн по понедельникам в 19:00». Повторы могут
+              пропускать праздники
+            </p>
+          </div>
+          <div class="card">
+            <h3 data-en="Spaces">Пространства</h3>
+            <p
+              class="muted"
+              data-en="Work, home, a trip: each has its own plan, and they stay out of each other’s way">
+              Работа, дом, поездка: у каждого свой план, и они не мешают друг другу
+            </p>
+          </div>
+          <div class="card">
+            <h3 data-en="Weekly review">Взгляд на неделю</h3>
+            <p class="muted" data-en="What is done, what is overdue and where to look next">
+              Что сделано, что просрочено и куда смотреть дальше
+            </p>
+          </div>
+          <div class="card">
+            <h3 data-en="To another phone">На другой телефон</h3>
+            <p
+              class="muted"
+              data-en="A backup of the plan to a file, and export to a calendar (.ics)">
+              Резервная копия плана в файл и экспорт в календарь (.ics)
+            </p>
+          </div>
+        </div>
+        <div class="actions">
+          <a class="button" href="https://app.zaplani.com/" data-en="Try it in the browser"
+            >Попробовать в браузере</a
+          >
+          <a class="button quiet" href="../" data-en="Back to the main page">На главную</a>
+        </div>
+      </section>
+
+      <footer class="muted">
+        <span>© 2026 ZaPlani</span>
+        <a href="../privacy/" data-en="Privacy policy">Политика конфиденциальности</a>
+        <a href="../terms/" data-en="Terms of Use">Условия использования</a>
+        <a href="mailto:dvdtech@bk.ru">dvdtech@bk.ru</a>
+        <a href="https://t.me/ZaPlani_pub">Telegram</a>
+      </footer>
+    </main>
+    <script>
+      const TITLE = { ru: 'Как пользоваться ZaPlani', en: 'How to use ZaPlani' };
+      const DESCRIPTION = {
+        ru: 'Пять сценариев ZaPlani: поездка одной фразой, дела без сети, «Собрать день», перенос голосом и большая цель по шагам.',
+        en: 'Five ZaPlani cases: a trip in one phrase, entries offline, “Plan my day”, moving plans by voice and a big goal step by step.',
+      };
+
+      // Russian stays in the markup; each element with data-en remembers it before the first swap.
+      const texts = document.querySelectorAll('[data-en]');
+      for (const el of texts) el.dataset.ru = el.innerHTML;
+      const images = document.querySelectorAll('[data-alt-en]');
+      for (const img of images) img.dataset.altRu = img.alt;
+      // The screenshots follow the language too: English ones sit in img/how/en/.
+      const shots = document.querySelectorAll('[data-en-src], [data-en-srcset]');
+      for (const el of shots) {
+        if (el.dataset.enSrc) el.dataset.ruSrc = el.getAttribute('src');
+        else el.dataset.ruSrcset = el.getAttribute('srcset');
+      }
+      function apply(lang) {
+        const en = lang === 'en';
+        for (const el of texts) el.innerHTML = en ? el.dataset.en : el.dataset.ru;
+        for (const img of images) img.alt = en ? img.dataset.altEn : img.dataset.altRu;
+        for (const el of shots) {
+          if (el.dataset.enSrc) el.src = en ? el.dataset.enSrc : el.dataset.ruSrc;
+          else el.srcset = en ? el.dataset.enSrcset : el.dataset.ruSrcset;
+        }
+        for (const button of document.querySelectorAll('[data-lang]')) {
+          button.setAttribute('aria-pressed', String(button.dataset.lang === lang));
+        }
+        document.documentElement.lang = lang;
+        document.title = TITLE[lang];
+        document.querySelector('meta[name="description"]').content = DESCRIPTION[lang];
+      }
+      function pick() {
+        const asked = new URLSearchParams(location.search).get('lang');
+        if (asked === 'ru' || asked === 'en') return asked;
+        try {
+          const saved = localStorage.getItem('zaplani-lang');
+          if (saved === 'ru' || saved === 'en') return saved;
+        } catch {}
+        return navigator.language?.toLowerCase().startsWith('ru') ? 'ru' : 'en';
+      }
+      let lang = pick();
+      for (const button of document.querySelectorAll('[data-lang]')) {
+        button.addEventListener('click', () => {
+          lang = button.dataset.lang;
+          try {
+            localStorage.setItem('zaplani-lang', lang);
+          } catch {}
+          apply(lang);
+        });
+      }
+      apply(lang);
+
+      // Each scenario plays its frames in turn while it is on screen; with reduced motion it stays
+      // on the last one, the result. The numbered chips under the phone show a frame by hand.
+      const still = matchMedia('(prefers-reduced-motion: reduce)');
+      const STEP = 2800;
+      const reels = [...document.querySelectorAll('.scene')].map((scene) => {
+        const frames = [...scene.querySelectorAll('.reel picture')];
+        const chips = [...scene.querySelectorAll('[data-frame]')];
+        const reel = { scene, frames, chips, at: 0, timer: null, seen: false };
+        reel.show = (i) => {
+          reel.at = i;
+          frames.forEach((f, k) => f.classList.toggle('on', k === i));
+          chips.forEach((c, k) => c.setAttribute('aria-pressed', String(k === i)));
+        };
+        reel.play = () => {
+          if (reel.timer || still.matches || !reel.seen) return;
+          reel.timer = setInterval(() => reel.show((reel.at + 1) % frames.length), STEP);
+        };
+        reel.stop = () => {
+          clearInterval(reel.timer);
+          reel.timer = null;
+        };
+        chips.forEach((chip, i) =>
+          chip.addEventListener('click', () => {
+            reel.stop();
+            reel.show(i);
+          }),
+        );
+        reel.show(still.matches ? frames.length - 1 : 0);
+        return reel;
+      });
+      const watch = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            const reel = reels.find((r) => r.scene === entry.target);
+            reel.seen = entry.isIntersecting;
+            if (reel.seen) reel.play();
+            else reel.stop();
+          }
+        },
+        { threshold: 0.4 },
+      );
+      for (const reel of reels) watch.observe(reel.scene);
+      still.addEventListener('change', () => {
+        for (const reel of reels) {
+          reel.stop();
+          if (still.matches) reel.show(reel.frames.length - 1);
+          else reel.play();
+        }
+      });
+    </script>
+  </body>
+</html>
