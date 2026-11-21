@@ -27,7 +27,7 @@
       </nav>
       <article id="ru" lang="ru">
 <h1>Политика конфиденциальности ZaPlani</h1>
-<p><em>Обновлено 3 ноября 2026 года. English version below.</em></p>
+<p><em>Обновлено 18 ноября 2026 года. English version below.</em></p>
 <p><strong>Коротко</strong></p>
 <ul>
 <li>План, настройки и ключи хранятся на вашем устройстве. Аккаунтов нет.</li>
@@ -61,14 +61,15 @@
 <p>Сервисы (Groq, GigaChat, Requesty, DeepSeek, OpenRouter, Anthropic, OpenAI или ваш собственный сервер) обрабатывают данные по своим правилам, с которыми вы соглашаетесь, подключая свой ключ. С Ollama на вашем компьютере и в Демо ничего не уходит в интернет.</p>
 <h2>4. Режим «ZaPlani · бесплатно» и наш сервер</h2>
 <p>В этом режиме фразы идут через сервер ZaPlani в облаке Cloud.ru (Россия) в модель Cloud.ru Foundation Models.</p>
-<p><strong>Чего сервер не делает.</strong> Он не записывает в хранилище ваши фразы, ответы модели и план: они проходят сквозь него и забываются. В технический журнал контейнера попадают коды и тексты ошибок, которые вернула модель, но не ваши фразы.</p>
-<p><strong>Что сервер хранит.</strong> Только счётчики, чтобы соблюдать бесплатные лимиты и расход:</p>
+<p><strong>Чего сервер не делает.</strong> Он не записывает в хранилище ваши фразы, ответы модели и план: они проходят сквозь него и забываются. В технический журнал контейнера попадают только фиксированные события и HTTP-коды, без содержимого запросов, ответов и текстов ошибок модели. При обрыве связи ответ восстановить нельзя: сервер его не хранит.</p>
+<p><strong>Что сервер хранит.</strong> Счётчики и технические маркеры без содержимого запросов и ответов, чтобы соблюдать бесплатные лимиты, расход и не обрабатывать одну отправку дважды:</p>
 <ul>
-<li>случайный номер устройства (приложение создаёт его само при первом запуске, он ни с чем не связан) и адрес сети в виде необратимого хеша: восстановить по хешу номер или адрес нельзя;</li>
+<li>хеш случайного номера устройства (приложение создаёт его при первом запуске) или кода доступа;</li>
 <li>сколько с этого номера было запросов: фраз, подсказок, сообщений чата, брифов, запросов погоды и курса;</li>
-<li>сколько токенов и рублей потрачено, сколько ответов модели не удалось разобрать и сколько запросов отклонено по лимиту.</li>
+<li>сколько токенов и рублей потрачено, сколько ответов модели не удалось разобрать и сколько запросов отклонено по лимиту;</li>
+<li>номер отправки, день, техническое состояние обработки и квоты, а также проверочные отпечатки без текста. Они запрещают повторный вызов модели и повторное списание, но не позволяют восстановить ответ.</li>
 </ul>
-<p>Счётчики лежат в файлах по месяцам в хранилище Cloud.ru. Мы не удаляем их автоматически: цифры нужны, чтобы считать расход и решать, сколько фраз можно давать бесплатно. В них нет ни имён, ни текстов.</p>
+<p>Счётчики и маркеры лежат в файлах по месяцам в хранилище Cloud.ru. Мы не удаляем их автоматически: цифры нужны, чтобы считать расход и решать, сколько фраз можно давать бесплатно. В них нет ни имён, ни текстов.</p>
 <p>Если вы вводили код доступа, он хранится на вашем устройстве и отправляется на сервер с запросами, чтобы снять лимиты.</p>
 <p>Свою сводку (устройства, фразы, расход, без текстов и без хешей) видит только разработчик по секретному коду.</p>
 <p>Cloud.ru как платформа может вести собственные технические журналы по своим правилам.</p>
@@ -99,7 +100,7 @@
 <h2>9. Сколько данных хранится</h2>
 <ul>
 <li>на устройстве: пока вы не удалите их сами или приложение;</li>
-<li>счётчики на сервере: в месячных файлах без текстов, пока мы их не удалим;</li>
+<li>счётчики и технические маркеры на сервере: в месячных файлах без содержимого запросов и ответов, без автоматического удаления;</li>
 <li>у выбранных вами сервисов: по их правилам.</li>
 </ul>
 <h2>10. Ваши права и как удалить данные</h2>
@@ -124,7 +125,7 @@
       <hr />
       <article id="en" lang="en">
 <h1>ZaPlani Privacy Policy</h1>
-<p><em>Updated November 3, 2026.</em></p>
+<p><em>Updated November 18, 2026.</em></p>
 <p><strong>In short</strong></p>
 <ul>
 <li>Your plan, settings and keys stay on your device. There are no accounts.</li>
@@ -158,14 +159,15 @@
 <p>The services (Groq, GigaChat, Requesty, DeepSeek, OpenRouter, Anthropic, OpenAI or your own server) handle the data under their own terms, which you accept by connecting your key. With Ollama on your computer and in Demo nothing goes to the internet.</p>
 <h2>4. The «ZaPlani · free» mode and our server</h2>
 <p>In this mode phrases go through the ZaPlani server in the Cloud.ru cloud (Russia) to the Cloud.ru Foundation Models model.</p>
-<p><strong>What the server does not do.</strong> It does not write your phrases, the model's answers or your plan to storage: they pass through and are forgotten. The container's technical log gets error codes and error texts returned by the model, not your phrases.</p>
-<p><strong>What the server keeps.</strong> Only counters, to hold the free limits and the spend:</p>
+<p><strong>What the server does not do.</strong> It does not write your phrases, the model's answers or your plan to storage: they pass through and are forgotten. The container log receives only fixed event names and HTTP status codes, without request or response contents or model error texts. An answer lost when the connection breaks cannot be recovered: the server does not retain it.</p>
+<p><strong>What the server keeps.</strong> Counters and technical markers without request or response contents, to enforce limits, track spend and avoid processing one submission twice:</p>
 <ul>
-<li>a random device number (the app makes it on first launch and it is tied to nothing else) and the network address as an irreversible hash: neither can be recovered from the hash;</li>
+<li>a hash of the random device number created on first launch, or of an access code;</li>
 <li>how many requests that number made: phrases, hints, chat messages, briefs, weather and rate look-ups;</li>
-<li>how many tokens and rubles were spent, how many model answers could not be read and how many requests were turned away by a limit.</li>
+<li>how many tokens and rubles were spent, how many model answers could not be read and how many requests were turned away by a limit;</li>
+<li>the submission ID, day, processing and quota state, and verification fingerprints without text. These prevent another model call or charge for the same submission, but cannot recover its answer.</li>
 </ul>
-<p>The counters sit in files by month in Cloud.ru storage. We do not delete them automatically: the numbers are needed to track the spend and to decide how many free phrases we can afford. They hold no names and no texts.</p>
+<p>The counters and markers sit in files by month in Cloud.ru storage. We do not delete them automatically: the numbers are needed to track the spend and to decide how many free phrases we can afford. They hold no names and no texts.</p>
 <p>If you entered an access code, it is stored on your device and sent to the server with requests to lift the limits.</p>
 <p>Only the developer sees the summary (devices, phrases, spend; no texts, no hashes), behind a secret code.</p>
 <p>Cloud.ru as a platform may keep its own technical logs under its own rules.</p>
@@ -196,7 +198,7 @@
 <h2>9. How long data is kept</h2>
 <ul>
 <li>on the device: until you delete it or the app;</li>
-<li>server counters: in monthly files without texts, until we delete them;</li>
+<li>server counters and technical markers: in monthly files without request or response contents, without automatic deletion;</li>
 <li>at the services you chose: under their rules.</li>
 </ul>
 <h2>10. Your rights and how to delete data</h2>
